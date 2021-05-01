@@ -1,12 +1,48 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const os = require('os');
 
-var mainWindow = null;
+var mainWin = null;
+var resultWin = null;
 
-var processedData;
+var path = null;
+var processedData = null;
 
-function createWindow() {
-    mainWindow = new BrowserWindow({
+ipcMain.on('file-choose', function (event) {//when file choose button pressed
+    if (os.platform() === 'linux' || os.platform() === 'win32') {
+        path = dialog.showOpenDialogSync({
+            properties: ['openFile']//file can be chose
+        });
+        console.log(path[0]);
+        //ÇöÀç´Â ±×³É ÄÜ¼ÖÃ¢¿¡ ÆÄÀÏ À§Ä¡ Ãâ·Â ³ªÁß¿¡ ¿ë¿¬ÀÌÇÑÅ× °æ·Î ³Ñ±æ ÆÄÀÏÀ§Ä¡ ÀúÀå 
+        //¿©±â¼­ ¿ë¿¬ÀÌ¸¦ ÅëÇØ¼­ ÆÄÀÏÀ» ·ÎÄÃ¼­¹ö·Î Àü¼Û
+    } else {//mac OS
+        path = dialog.showOpenDialogSync({
+            properties: ['openFile', 'openDirectory']//file and directory can be chose
+        });
+        console.log(path[0]);//¿©±âµµ ¸¶Âù°¡Áö
+    }
+
+
+    //´ëÃæ ·ÎÄÃ¼­¹ö¿¡¼­ ÆÄÀÏÀ» °¡Á®¿Ô´Ù°í µÒ ÀÌ ºÎºÐÀº ³ªÁß¿¡ ÀÌº¥Æ®·Î ÇØ¾ßÇÔ ÀÏ´Ü ±×°É ÇöÀç ±¸Çö ºÒ°¡´ÉÇÏ´Ï ÀÌ ÀÌº¥Æ®¿¡¼­ ½ÇÇàÀ» ÇÔ
+    //ÄÚµå ÀÚÃ¼¸¦ ½ºÆ®¸µÈ­ ½ÃÄÑ ±× ´ÙÀ½¿¡ nodejs¿¡¼­ json library ÀÌ¿ëÇØ¼­ parsingÀ» ÁøÇàÇØ ±×·± ´ÙÀ½¿¡ µ¹¸®¸é µÉµí
+    processedData = '';
+
+    resultWin = new BrowserWindow({//°á°úÃ¢
+        width: 800,
+        height: 600,
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false
+        }
+    });
+
+    resultWin.loadFile('result.html');
+    //±×¸®°í ÀÌ µ¥ÀÌÅÍ¸¦ result.html·Î º¸³»¾ß ÇÑ´Ù.
+});
+
+
+app.whenReady().then(() => {
+    mainWin = new BrowserWindow({
         resizable: true,
         height: 600,
         width: 800,
@@ -16,38 +52,7 @@ function createWindow() {
         }
     });
 
-    mainWindow.loadFile('index.html');
-}
-
-ipcMain.on('open-file-dialog-for-file', function (event) {//when file choose button pressed
-    if (os.platform() === 'linux' || os.platform() === 'win32') {
-        dialog.showOpenDialog({
-            properties: ['openFile']//file can be chose
-        }).then((result) => {
-            console.log(result.filePaths.toString());//í˜„ìž¬ëŠ” ê·¸ëƒ¥ ì½˜ì†”ì°½ì— íŒŒì¼ ìœ„ì¹˜ ì¶œë ¥ ë‚˜ì¤‘ì— ìš©ì—°ì´í•œí…Œ ê²½ë¡œ ë„˜ê¸¸ íŒŒì¼ìœ„ì¹˜ ì €ìž¥ 
-        });
-    } else {//mac OS
-        dialog.showOpenDialog({
-            properties: ['openFile', 'openDirectory']//file and directory can be chose
-        }).then((result) => {
-            console.log(result.filePaths);
-        });
-    }
-
-
-    //ì´ì œ ì—¬ê¸°ì„œ ìƒˆ ì°½ì„ ë¡œë”©í•¨
-
-});
-
-
-app.whenReady().then(() => {//when ready 
-    createWindow();//create mainwindow
-
-    app.on('activate', () => {
-        if (BrowserWindow.getAllWindows().length === 0) {
-            createWindow();
-        }
-    })
+    mainWin.loadFile('index.html');
 });
 
 
