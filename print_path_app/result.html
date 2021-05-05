@@ -3,17 +3,124 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Hello World!</title>
-    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+    <title>Result</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        #body {
+            background: #f0ece2;
+            justify-content: center;
+            display: flex;
+        }
+
+        .layer {
+            display: flex;
+            width: 150px;
+            border: 1px solid blueviolet;
+            background: white;
+            margin-top: 0;
+            margin-bottom: 0;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .f {
+            width: 30px;
+            height: 30px;
+            background: tomato;
+            color: white;
+            padding-left: 4px;
+            border-radius: 4px;
+        }
+
+        .h {
+            height: 30px;
+            width: 30px;
+            background: cornflowerblue;
+            color: white;
+            padding-left: 4px;
+            border-radius: 4px;
+        }
+
+        .vl {
+            border-left: 2px solid blueviolet;
+            height: 30px;
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+
+        .vlBox {
+            justify-content: center;
+            display: flex;
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+
+        .sidebar {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            right: 0;
+            transition: 0.5s;
+            background: white;
+        }
+
+        .bigPart {
+            font-weight: bold;
+            margin-bottom: 10px;
+            margin-left: 5px;
+        }
+
+        .smallPart {
+            font-weight: normal;
+            margin-top: 5px;
+            margin-bottom: 5px;
+            padding-left: 10px;
+        }
+    </style>
 </head>
 
-<body style="background: white;">
-    <h1>Hello World!</h1>
-    <p>
-        We are using Node.js <span id="node-version"></span>,
-        Chromium <span id="chrome-version"></span>,
-        and Electron <span id="electron-version"></span>.
-    </p>
+<body id="body">
+    <div id='layerList'></div>
+    <div id="test"></div>
+    <!--나중에 삭제 예정-->
+    <div id="informSidebar" class="sidebar">
+        <div id="layerName" class="bigPart">layer name</div>
+        <div id="dataInput" class="bigPart">data input
+            <div class="smallPart">
+                <span id="inputShape">shape</span>
+                <span id="inputShapeValue">blank</span>
+            </div>
+        </div>
+        <div id="properties" class="bigPart">properties
+            <div id="option" class="smallPart">
+                option
+            </div>
+        </div>
+        <div class="bigPart">data output
+            <div class="smallPart">
+                <span id="outputShape">shape</span>
+                <span id="outputShapeValue"></span>
+            </div>
+            <div class="smallPart">
+                <span id="propa" class="smallPart">순전파</span>
+                <span id="propaValue"> </span>
+            </div>
+            <div class="smallPart">
+                <span id="backPropa" class="smallPart">역전파</span>
+                <span>
+                    <span id="backPropa_symbol"> </span>
+                    <span id="backPropa_value"> </span>
+                </span>
+            </div>
+
+        </div>
+    </div>
+
+    <script src=" graph.js">
+    </script>
 </body>
 
 </html>
